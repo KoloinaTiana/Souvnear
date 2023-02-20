@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Projet</string>
+    <string name="title_activity_nologin">Nologin</string>
+    <string name="title_activity_logged">Logged</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="help_text">Need Help? Contact-us</string>
+    <string name="description">Catch your favorite moments and let us keep it. With Souv\'near, never forget the moments and the places of your memories. We will remind you !</string>
+    <string name="mon_compte">My account</string>
+    <string name="mes_souvenirs">My memories</string>
+    <string name="aide">Help</string>
+    <string name="disconnect">Log out</string>
+    <string name="connexion">Log in</string>
+    <string name="inscription">S\'inscrire</string>
+    <string name="log_in">Log in</string>
+    <string name="mdp">Password</string>
+    <string name="no_log">Continue without log in</string>
+    <string name="error">This account already exists or incorrect infomations</string>
+    <string name="sign_in">Sign in</string>
+    <string name="phone">Phone</string>
+    <string name="error_sign">Please fill all the inputs</string>
+</resources>
