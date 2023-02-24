@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
@@ -48,21 +49,25 @@ public class Logged extends AppCompatActivity {
 
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
         NavigationView nav = findViewById(R.id.nav_view);
-        TextView name= nav.findViewById(R.id.username);
-        TextView email= nav.findViewById(R.id.useremail);
+        View headerView = nav.getHeaderView(0);
+        TextView name= headerView.findViewById(R.id.username);
+        TextView email= headerView.findViewById(R.id.useremail);
         Intent intent=getIntent();
         String e, p;
         Bundle extras = intent.getExtras();
+
         if(extras == null) {
             e= null;
             p = null;
         } else {
-            e= String.valueOf(extras.getInt("email"));
-            p= String.valueOf(extras.getInt("password"));
-            //Cursor c = databaseHelper.findUser(e, p);
-            //name.setText(c.getString(c.getColumnIndex("nom")));
+            e= intent.getStringExtra("email");
+            p= intent.getStringExtra("password");
+            Cursor c = databaseHelper.findUser(e, p);
+            if (c.moveToFirst()) {
+                name.setText(c.getString(c.getColumnIndex("nom")));
+            }
             email.setText(e);
-            //c.close();
+            c.close();
             databaseHelper.close();
         }
     }

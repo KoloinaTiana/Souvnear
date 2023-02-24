@@ -25,4 +25,8 @@
     <string name="sign_in">Inscription</string>
     <string name="phone">Téléphone</string>
     <string name="error_sign">Veuillez remplir tous les champs</string>
+    <string name="new_souv">Nouveau souvenir</string>
+    <string name="enregistrer">Enregistrer</string>
+    <string name="nom">Nom</string>
+    <string name="titre">Titre</string>
 </resources>

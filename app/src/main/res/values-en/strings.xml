@@ -26,4 +26,8 @@
     <string name="sign_in">Sign in</string>
     <string name="phone">Phone</string>
     <string name="error_sign">Please fill all the inputs</string>
+    <string name="new_souv">New memory</string>
+    <string name="enregistrer">Save</string>
+    <string name="nom">Name</string>
+    <string name="titre">Title</string>
 </resources>

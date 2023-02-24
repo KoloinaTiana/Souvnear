@@ -5,7 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
 import android.util.Log;
+
+import java.io.ByteArrayOutputStream;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "accounts.db";
@@ -18,9 +21,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PHONE = "phone";
     private static final String COLUMN_PASSWORD = "password";
 
-    private static final String TABLE_LISTS = "lists";
-    private static final String COLUMN_USER = "user";
-    private static final String COLUMN_TITLE = "title";
+    private static final String TABLE_LIST = "list";
+    private static final String COLUMN_DESCRIPTION = "description";
+    private static final String COLUMN_IMAGE = "user";
+    private static final String COLUMN_TITLE = "image";
+    private static final String COLUMN_LATITUDE = "latitude";
+    private static final String COLUMN_LONGITUDE = "longitude";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -30,8 +36,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_USERS + "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_NAME + " TEXT," + COLUMN_EMAIL + " TEXT," + COLUMN_PHONE + " NUMERIC," + COLUMN_PASSWORD + " TEXT)";
         db.execSQL(createTable);
-        String createList = "CREATE TABLE " + TABLE_LISTS + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_USER + " TEXT," + COLUMN_TITLE + " TEXT," + COLUMN_PHONE + " NUMERIC," + COLUMN_PASSWORD + " TEXT)";
-        db.execSQL(createTable);
+        String createList = "CREATE TABLE " + TABLE_LIST + " (" +
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_TITLE + " TEXT, " +
+                COLUMN_DESCRIPTION + " TEXT, " +
+                COLUMN_IMAGE + " BLOB, " +
+                COLUMN_LATITUDE + " REAL, " +
+                COLUMN_LONGITUDE + " REAL)";
+        db.execSQL(createList);
     }
 
     @Override
@@ -58,7 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean checkLogin(String email, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query("users", new String[] { "id", "email", "password" }, "email=? and password=?",
+        Cursor cursor = db.query("users", new String[] { "id", "email", "password", "nom" }, "email=? and password=?",
                 new String[] { email, password }, null, null, null);
         int count = cursor.getCount();
         cursor.close();
@@ -72,11 +84,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor findUser(String email, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query("users", new String[] { "id", "email", "password" }, "email=? and password=?",
+        Cursor cursor = db.query("users", new String[] { "id", "email", "password", "nom" }, "email=? and password=?",
                 new String[] { email, password }, null, null, null);
         int count = cursor.getCount();
-        cursor.close();
-        db.close();
         if (count != 0) {
             return cursor;
         }else {
@@ -84,4 +94,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public long insertPhoto(String title, String description, Bitmap image, double latitude, double longitude) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TITLE, title);
+        values.put(COLUMN_DESCRIPTION, description);
+        values.put(COLUMN_IMAGE, getBytes(image));
+        values.put(COLUMN_LATITUDE, latitude);
+        values.put(COLUMN_LONGITUDE, longitude);
+
+        long id = db.insert(TABLE_LIST, null, values);
+
+        db.close();
+
+        return id;
+    }
+
+    private byte[] getBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
+    }
 }
