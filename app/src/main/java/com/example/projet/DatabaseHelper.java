@@ -1,14 +1,21 @@
 package com.example.projet;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
+import android.util.Base64;
 import android.util.Log;
 
+import com.example.projet.ui.list.ListFragment;
+import com.example.projet.ui.list.MyData;
+
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "accounts.db";
@@ -23,10 +30,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_LIST = "list";
     private static final String COLUMN_DESCRIPTION = "description";
-    private static final String COLUMN_IMAGE = "user";
-    private static final String COLUMN_TITLE = "image";
+    private static final String COLUMN_USERID = "userId";
+    private static final String COLUMN_IMAGE = "image";
+    private static final String COLUMN_TITLE = "titre";
     private static final String COLUMN_LATITUDE = "latitude";
     private static final String COLUMN_LONGITUDE = "longitude";
+    private static final String COLUMN_DATE = "date";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -38,11 +47,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(createTable);
         String createList = "CREATE TABLE " + TABLE_LIST + " (" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_USERID + " INTEGER, " +
                 COLUMN_TITLE + " TEXT, " +
                 COLUMN_DESCRIPTION + " TEXT, " +
                 COLUMN_IMAGE + " BLOB, " +
                 COLUMN_LATITUDE + " REAL, " +
-                COLUMN_LONGITUDE + " REAL)";
+                COLUMN_LONGITUDE + " REAL, " +
+                COLUMN_DATE + " TEXT)";
         db.execSQL(createList);
     }
 
@@ -54,7 +65,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void addUser(String name, String email, String phone, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Log.i("OUHHHH", "BDD crée");
         ContentValues contentValues = new ContentValues();
         int id = 0;
         contentValues.put(COLUMN_ID, id);
@@ -94,15 +104,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public long insertPhoto(String title, String description, Bitmap image, double latitude, double longitude) {
+    public long insertPhoto(int userId, String title, String description, Bitmap image, double latitude, double longitude, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(COLUMN_USERID, userId);
         values.put(COLUMN_TITLE, title);
         values.put(COLUMN_DESCRIPTION, description);
         values.put(COLUMN_IMAGE, getBytes(image));
         values.put(COLUMN_LATITUDE, latitude);
         values.put(COLUMN_LONGITUDE, longitude);
+        values.put(COLUMN_DATE, String.valueOf(date));
 
         long id = db.insert(TABLE_LIST, null, values);
 
@@ -115,5 +127,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
         return stream.toByteArray();
+    }
+
+    public ArrayList<MyData> getListData(int uid) {
+        ArrayList<MyData> data = new ArrayList<>();
+
+        // Récupérez les données de votre base de données et ajoutez-les à votre ArrayList
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_LIST, new String[] {COLUMN_USERID,COLUMN_TITLE, COLUMN_DESCRIPTION, COLUMN_IMAGE, COLUMN_LATITUDE, COLUMN_LONGITUDE, COLUMN_DATE}, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") String userid = cursor.getString(cursor.getColumnIndex(COLUMN_USERID));
+            @SuppressLint("Range") String title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
+            @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
+            @SuppressLint("Range") byte[] image = cursor.getBlob(cursor.getColumnIndex(COLUMN_IMAGE));
+            @SuppressLint("Range") double latitude = cursor.getDouble(cursor.getColumnIndex(COLUMN_LATITUDE));
+            @SuppressLint("Range") double longitude = cursor.getDouble(cursor.getColumnIndex(COLUMN_LONGITUDE));
+            @SuppressLint("Range") String date = cursor.getString(cursor.getColumnIndex(COLUMN_DATE));
+
+            MyData item = new MyData(title, description,date, latitude, longitude, image);
+            data.add(item);
+        }
+        cursor.close();
+
+        return data;
+    }
+
+    public void deleteData(int userId, String titre, byte[] img, String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM list " +
+                "WHERE userId = ?" +
+                "AND titre = ? " +
+                "AND image = ?" +
+                "AND date = ?";
+        Object[] args = {userId, titre, img, date};
+        db.execSQL(query, args);
     }
 }

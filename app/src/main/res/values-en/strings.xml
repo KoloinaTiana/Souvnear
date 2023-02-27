@@ -30,4 +30,7 @@
     <string name="enregistrer">Save</string>
     <string name="nom">Name</string>
     <string name="titre">Title</string>
+    <string name="description_photo">Description</string>
+    <string name="supprimer">Delete</string>
+    <string name="partager">Share</string>
 </resources>

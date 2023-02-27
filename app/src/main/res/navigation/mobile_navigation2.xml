@@ -23,7 +23,8 @@
         android:label="Aide"
         tools:layout="@layout/fragment_help" />
     <fragment
-        android:id="@+id/nav_out"
+        android:id="@+id/nav_logout"
+        android:name="com.example.projet.ui.Logout.Logout"
         android:label="Se déconnecter"
-        tools:layout="@layout/activity_main" />
+        tools:layout="@layout/fragment_logout"/>
 </navigation>

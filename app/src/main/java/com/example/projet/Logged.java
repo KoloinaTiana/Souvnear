@@ -1,9 +1,14 @@
 package com.example.projet;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -12,6 +17,7 @@ import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -47,29 +53,14 @@ public class Logged extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
         NavigationView nav = findViewById(R.id.nav_view);
         View headerView = nav.getHeaderView(0);
         TextView name= headerView.findViewById(R.id.username);
         TextView email= headerView.findViewById(R.id.useremail);
-        Intent intent=getIntent();
-        String e, p;
-        Bundle extras = intent.getExtras();
-
-        if(extras == null) {
-            e= null;
-            p = null;
-        } else {
-            e= intent.getStringExtra("email");
-            p= intent.getStringExtra("password");
-            Cursor c = databaseHelper.findUser(e, p);
-            if (c.moveToFirst()) {
-                name.setText(c.getString(c.getColumnIndex("nom")));
-            }
-            email.setText(e);
-            c.close();
-            databaseHelper.close();
-        }
+        Context context = getApplicationContext();
+        SharedPreferences sharedPreferences = context.getSharedPreferences("session", Context.MODE_PRIVATE);
+        name.setText(sharedPreferences.getString("nom", ""));
+        email.setText(sharedPreferences.getString("email", ""));
     }
 
     @Override
@@ -84,5 +75,27 @@ public class Logged extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_logged);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // Afficher une boîte de dialogue pour demander l'activation de la localisation
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Activer la localisation");
+            builder.setMessage("La localisation est nécessaire pour utiliser cette application");
+            builder.setPositiveButton("Activer", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Ouvrir les paramètres de localisation
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                }
+            });
+            builder.show();
+        }
     }
 }

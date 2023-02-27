@@ -3,10 +3,13 @@ package com.example.projet;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,5 +62,26 @@ public class SignIn extends AppCompatActivity {
                 }
             }
         });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // Afficher une boîte de dialogue pour demander l'activation de la localisation
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Activer la localisation");
+            builder.setMessage("La localisation est nécessaire pour utiliser cette application");
+            builder.setPositiveButton("Activer", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Ouvrir les paramètres de localisation
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                }
+            });
+            builder.show();
+        }
     }
 }
