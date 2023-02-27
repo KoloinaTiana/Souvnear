@@ -35,6 +35,11 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<ListViewHold
         this.mLayoutInflater = LayoutInflater.from(context);
     }
 
+    public void updateData(ArrayList<MyData> datas) {
+        this.data = datas;
+        notifyDataSetChanged();
+    }
+
     @Override
     public ListViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         // Inflate view from recyclerview_item_layout.xml

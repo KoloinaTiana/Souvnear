@@ -43,6 +43,7 @@ public class ListFragment extends Fragment {
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 2;
     private RecyclerView recyclerView;
+    int uid;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -73,11 +74,11 @@ public class ListFragment extends Fragment {
             }
         });
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
         Context context = getContext();
         assert context != null;
         SharedPreferences sharedPreferences = context.getSharedPreferences("session", Context.MODE_PRIVATE);
-        int uid = sharedPreferences.getInt("id", 0);
+        uid = sharedPreferences.getInt("id", 0);
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
         ArrayList<MyData> datas = databaseHelper.getListData(uid);
 
         recyclerView = root.findViewById(R.id.recyclerView);
@@ -113,7 +114,11 @@ public class ListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("BBBBB", "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
+        ArrayList<MyData> datas = databaseHelper.getListData(uid);
+        CustomRecyclerViewAdapter adapter = (CustomRecyclerViewAdapter) recyclerView.getAdapter();
+        adapter.updateData(datas);
+
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             // Afficher une boîte de dialogue pour demander l'activation de la localisation

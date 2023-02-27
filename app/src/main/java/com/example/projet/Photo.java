@@ -103,8 +103,7 @@ public class Photo extends AppCompatActivity {
                     databaseHelper.insertPhoto(uid,t, des, imageBitmap, latitude, longitude, dateTime);
                     titre.setText("");
                     desc.setText("");
-                    Intent i = new Intent(Photo.this, ListFragment.class);
-                    startActivity(i);
+                    finish();
                 }
             }
         });

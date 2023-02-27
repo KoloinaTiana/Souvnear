@@ -62,8 +62,7 @@ public class DetailActivity extends AppCompatActivity {
                 int uid = sharedPreferences.getInt("id", 0);
                 DatabaseHelper databaseHelper = new DatabaseHelper(DetailActivity.this);
                 databaseHelper.deleteData(uid, titre,imageBytes, date);
-                Intent i = new Intent(DetailActivity.this, ListFragment.class);
-                startActivity(i);
+                finish();
             }
         });
     }
