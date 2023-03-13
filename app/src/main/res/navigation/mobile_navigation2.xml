@@ -12,9 +12,15 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
+        android:id="@+id/nav_profil"
+        android:name="com.example.projet.ui.profil.ProfilFragment"
+        android:label="@string/menu_profil"
+        tools:layout="@layout/fragment_profil" />
+
+    <fragment
         android:id="@+id/nav_list"
         android:name="com.example.projet.ui.list.ListFragment"
-        android:label="liste"
+        android:label="@string/list"
         tools:layout="@layout/fragment_list" />
 
     <fragment

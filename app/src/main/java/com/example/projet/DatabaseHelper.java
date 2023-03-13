@@ -104,6 +104,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Cursor findUserById(int uid) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("users", new String[] { "id", "email", "password", "nom", "phone" }, "id=?",
+                new String[] {String.valueOf(uid)}, null, null, null);
+        int count = cursor.getCount();
+        if (count != 0) {
+            return cursor;
+        }else {
+            return null;
+        }
+    }
+
     public long insertPhoto(int userId, String title, String description, Bitmap image, double latitude, double longitude, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -132,9 +144,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<MyData> getListData(int uid) {
         ArrayList<MyData> data = new ArrayList<>();
 
-        // Récupérez les données de votre base de données et ajoutez-les à votre ArrayList
+        // Récupérez les données de la base de données
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_LIST, new String[] {COLUMN_USERID,COLUMN_TITLE, COLUMN_DESCRIPTION, COLUMN_IMAGE, COLUMN_LATITUDE, COLUMN_LONGITUDE, COLUMN_DATE}, null, null, null, null, null);
+        Cursor cursor = db.query(TABLE_LIST, new String[] {COLUMN_USERID,COLUMN_TITLE, COLUMN_DESCRIPTION, COLUMN_IMAGE, COLUMN_LATITUDE, COLUMN_LONGITUDE, COLUMN_DATE}, "userId=?", new String[] {String.valueOf(uid)}, null, null, null);
         while (cursor.moveToNext()) {
             @SuppressLint("Range") String userid = cursor.getString(cursor.getColumnIndex(COLUMN_USERID));
             @SuppressLint("Range") String title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
@@ -161,5 +173,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "AND date = ?";
         Object[] args = {userId, titre, img, date};
         db.execSQL(query, args);
+    }
+
+    public void uptdateUser(int uid, String nom, String email, String phone, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("nom", nom);
+        values.put("email", email);
+        values.put("phone", phone);
+        values.put("password", password);
+
+        String whereClause = "id = ?";
+        String[] whereArgs = { String.valueOf(uid) };
+
+        db.update("users", values, whereClause, whereArgs);
+        db.close();
     }
 }

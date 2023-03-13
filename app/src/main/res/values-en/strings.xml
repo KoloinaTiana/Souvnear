@@ -33,4 +33,9 @@
     <string name="description_photo">Description</string>
     <string name="supprimer">Delete</string>
     <string name="partager">Share</string>
+    <string name="list">List</string>
+    <string name="menu_profil">My account</string>
+    <string name="modif_profil">Edit profile</string>
+    <string name="annuler">Exit</string>
+    <string name="save">Save</string>
 </resources>

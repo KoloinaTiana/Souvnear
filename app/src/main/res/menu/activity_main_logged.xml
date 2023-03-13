@@ -21,8 +21,9 @@
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/aide" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@android:drawable/ic_lock_power_off"
+            android:title="@string/disconnect" />
     </group>
-    <item
-        android:icon="@android:drawable/ic_lock_power_off"
-        android:title="@string/disconnect" />
 </menu>
