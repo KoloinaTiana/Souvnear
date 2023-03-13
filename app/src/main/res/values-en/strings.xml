@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Projet</string>
+    <string name="app_name">Souv\'near</string>
     <string name="title_activity_nologin">Nologin</string>
     <string name="title_activity_logged">Logged</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
