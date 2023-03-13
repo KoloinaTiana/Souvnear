@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.Manifest;
 
+import com.example.projet.ui.home.HomeFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -27,6 +28,7 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -42,6 +44,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Récupérer les SharedPreferences
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("session",Context.MODE_PRIVATE);
+        // Lire la préférence partagée
+        boolean resterConnecte = sharedPref.getBoolean("connexion", false);
+        if (resterConnecte) {
+            //connexion automatique
+            Intent auto_login = new Intent(MainActivity.this, Logged.class);
+            startActivity(auto_login);
+        }
+
         // Initialiser la localisation et la requête
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         locationRequest = LocationRequest.create()
@@ -51,16 +63,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Vérifier la permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // Request location updates
+            // Mise à jour de la localisation
             initLocation();
         } else {
-            // Request permission
+            //Demande permission
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
 
+        //Text d'erreur
         TextView err = findViewById(R.id.error);
         err.setVisibility(View.INVISIBLE);
 
+        //Mode hors connexion
         Button nolog = findViewById(R.id.nologin_button);
         nolog.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -77,12 +91,18 @@ public class MainActivity extends AppCompatActivity {
                 String email = String.valueOf(e.getText());
                 EditText pw = findViewById(R.id.password_edit_text);
                 String password = String.valueOf(pw.getText());
+                CheckBox mCheckBox = findViewById(R.id.my_checkbox);
+
+                boolean isChecked = mCheckBox.isChecked();
 
                 if(email.equals("") | password.equals("")){
                     err.setVisibility(View.VISIBLE);
                 }else {
+                    //Vérifier si l'user exite dans la base de données
                     if (databaseHelper.checkLogin(email, password)) {
                         Context context = getApplicationContext();
+
+                        //Enregistrer les informations de l'user danns les préférences partagés
                         SharedPreferences sharedPreferences = context.getSharedPreferences("session", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         Cursor c = databaseHelper.findUser(email, password);
@@ -97,13 +117,24 @@ public class MainActivity extends AppCompatActivity {
                         err.setVisibility(View.INVISIBLE);
                         e.setText("");
                         pw.setText("");
+                        if (isChecked) {
+                            // Modifier les préférences partagées
+                            editor.putBoolean("connexion", true);
+                            editor.apply();
+                        }else{
+                            editor.putBoolean("connexion", false);
+                            editor.apply();
+                        }
                     } else {
                         err.setVisibility(View.VISIBLE);
                     }
                 }
+
+
             }
         });
 
+        //Redirection vers la page d'inscription
         Button sign = findViewById(R.id.signin_button);
         sign.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
@@ -113,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Mise à jour de la localisation
     private void initLocation() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 

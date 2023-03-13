@@ -66,8 +66,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void addUser(String name, String email, String phone, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        int id = 0;
-        contentValues.put(COLUMN_ID, id);
         contentValues.put(COLUMN_NAME, name);
         contentValues.put(COLUMN_EMAIL, email);
         contentValues.put(COLUMN_PHONE, phone);
@@ -75,7 +73,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.insert(TABLE_USERS, null, contentValues);
         db.close();
-        id++;
     }
 
     public boolean checkLogin(String email, String password) {

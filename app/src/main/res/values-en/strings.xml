@@ -38,4 +38,5 @@
     <string name="modif_profil">Edit profile</string>
     <string name="annuler">Exit</string>
     <string name="save">Save</string>
+    <string name="rester_connect">Stay connected</string>
 </resources>

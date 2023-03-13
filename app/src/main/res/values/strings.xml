@@ -37,4 +37,5 @@
     <string name="modif_profil">Modifier profil</string>
     <string name="annuler">Annuler</string>
     <string name="save">Enregistrer</string>
+    <string name="rester_connect">Rester connecté</string>
 </resources>

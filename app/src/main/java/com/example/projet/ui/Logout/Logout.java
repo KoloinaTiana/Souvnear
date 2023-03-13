@@ -35,6 +35,10 @@ public class Logout extends Fragment {
         editor.remove("id").apply();
         editor.remove("nom").apply();
         editor.remove("email").apply();
+        editor.remove("connexion");
+        editor.apply();
+
+
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
 
