@@ -16,6 +16,7 @@ import com.example.projet.ui.list.MyData;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "accounts.db";
@@ -185,5 +186,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.update("users", values, whereClause, whereArgs);
         db.close();
+    }
+
+    public List<String> getDates(int uid){
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<String> dates = new ArrayList<>();
+        String[] columns = {COLUMN_DATE};
+        String[] arg = {String.valueOf(uid)};
+        Cursor cursor = db.query(TABLE_LIST, columns, "userId = ?", arg, null, null, null);
+        while (cursor.moveToNext()) {
+            @SuppressLint("Range") String date = cursor.getString(cursor.getColumnIndex(COLUMN_DATE));
+            dates.add(date);
+        }
+        return dates;
     }
 }
