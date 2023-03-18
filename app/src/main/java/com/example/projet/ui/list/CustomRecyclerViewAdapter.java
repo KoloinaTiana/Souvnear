@@ -42,7 +42,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<ListViewHold
 
     @Override
     public ListViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-        // Inflate view from recyclerview_item_layout.xml
+        // Inflate view du recyclerview_item_layout.xml
         View recyclerViewItem = mLayoutInflater.inflate(R.layout.recyclerview_item_layout, parent, false);
 
         recyclerViewItem.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +54,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<ListViewHold
         return new ListViewHolder(recyclerViewItem);
     }
 
-    // Find Image ID corresponding to the name of the image (in the directory drawable).
+    // Trouve Image ID correspondant au nom de l'image.
     public int getDrawableResIdByName(String resName)  {
         String pkgName = context.getPackageName();
         // Return 0 if not found.
@@ -63,7 +63,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<ListViewHold
         return resID;
     }
 
-    // Click on RecyclerView Item.
+    //Clique sur le recyclerview
     private void handleRecyclerItemClick(RecyclerView recyclerView, View itemView) {
         int itemPosition = recyclerView.getChildLayoutPosition(itemView);
         MyData mydata  = this.data.get(itemPosition);
@@ -88,6 +88,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<ListViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 // Passage à la nouvelle activité pour afficher le détail de la photo
 
                 Geocoder geocoder = new Geocoder(context, Locale.getDefault());

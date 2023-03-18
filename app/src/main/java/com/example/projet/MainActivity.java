@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSION_REQUEST_CODE = 1;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
 
@@ -58,7 +59,17 @@ public class MainActivity extends AppCompatActivity {
                 .setInterval(10000) // 10 seconds
                 .setFastestInterval(5000); // 5 seconds
 
-        // Vérifier la permission
+
+        //Vérifier permission stockage
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // La permission d'écriture n'est pas accordée, donc nous la demandons à l'utilisateur
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
+
+        // Vérifier la permission localisation
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // Mise à jour de la localisation
             initLocation();
@@ -85,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             startService(serviceIntent);
         }
 
-        //Text d'erreur
+        //Texte d'erreur
         TextView err = findViewById(R.id.error);
         err.setVisibility(View.INVISIBLE);
 

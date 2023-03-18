@@ -61,6 +61,7 @@ public class NotificationApp extends Service {
         }
     }
 
+    //Création de la notification
     private void createNotification(int timeElapsed) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_MUTABLE);
@@ -86,9 +87,12 @@ public class NotificationApp extends Service {
             int uid = sharedPreferences.getInt("id", -1);
             boolean b = sharedPreferences.getBoolean("connexion", false);
 
+            //Vérifier si un user est connecté
             if (uid >= 0 && b) {
+                //Récupération des dates de la base de données
                 List<String> dates = db.getDates(uid);
 
+                //Boucle sur les dates pour vérifier si elles correspondent à la date d'aujourd'hui
                 for (String dateString : dates) {
                     SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     Log.i("Heyyyyyyyyyyyy", dateString);
