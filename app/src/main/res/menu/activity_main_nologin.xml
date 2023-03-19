@@ -14,7 +14,7 @@
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/aide" />
         <item
-            android:id="@+id/nav_auth"
+            android:id="@+id/nav_logout"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/log_in" />
     </group>
